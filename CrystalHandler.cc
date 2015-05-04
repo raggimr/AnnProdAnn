@@ -32,6 +32,16 @@ CrystalHandler::~CrystalHandler()
   }
 }
 
+Crystal* CrystalHandler::GetSeed(double Ethr)
+{
+  for(int kk; kk<fNCrystals;kk++){
+    if(!(fCrystalList[kk]->IsUsed()) && fCrystalList[kk]->GetEnergy()>= Ethr){
+      return fCrystalList[kk];
+    }
+  }
+  return 0;
+}
+
 Crystal* CrystalHandler::CreateCrystal(int ix,int iy)
 {
   if(fCrystalMap[ix][iy]!=0){
@@ -54,17 +64,17 @@ void CrystalHandler::SortEnergy()
   std::sort(fCrystalList,fCrystalList+fNCrystals,SortByEnergy);
 }
 
-int CrystalHandler::FindSeeds(double thr)
-{
-  int nseed=0;
-  for(int kk=0;kk<fNCrystals;kk++){
-    if( fCrystalList[kk]->GetEnergy()>= thr) {
-      fCrystalList[kk]->SetSeed();
-      nseed++;
-    }
-  }
-  return nseed;
-}
+//int CrystalHandler::FindSeeds(double thr)
+//{
+//  int nseed=0;
+//  for(int kk=0;kk<fNCrystals;kk++){
+//    if( fCrystalList[kk]->GetEnergy()>= thr) {
+//      fCrystalList[kk]->SetSeed();
+//      nseed++;
+//    }
+//  }
+//  return nseed;
+//}
 
 void CrystalHandler::Print()
 {
@@ -73,8 +83,5 @@ void CrystalHandler::Print()
     fCrystalList[kk]->Print();
   }
 }
-
-
-
 
 #endif

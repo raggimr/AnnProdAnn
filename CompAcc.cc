@@ -5,7 +5,7 @@
 #include <iostream>
 #include "cstdlib"
 #include "math.h"
-#include "../include/Constants.hh"
+
 using namespace std;
 
 double CompAcc::CompAccVis(char* ListVis, int nacc)

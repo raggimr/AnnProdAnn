@@ -10,14 +10,22 @@ public :
   ~CrystalHandler();
   
  public :
-  int FindSeeds(double thr); //returns Nseeds with E>thr
+  //  int FindSeeds(double thr); //returns Nseeds with E>thr
+
   int GetNCrystals(){return fNCrystals;};
   void SortEnergy();
   void Print();
 
-  Crystal * CreateCrystal(int ix,int iy); //return poiter to crystal
-  Crystal * GetCrystal(int x,int y); //return poiter to crystal
+
+  Crystal * GetSeed(double Ethr); //return pointer to crystal
+
+  Crystal * CreateCrystal(int ix,int iy); //return pointer to crystal
+
+  Crystal * GetCrystal(int x,int y); //return pointer from crystal map
+  Crystal * GetCrystal(int i);      //return pointer from crystal array
+
   Crystal * GetCrystalFromPos(double x,double y); //return poiter to crystal
+
  private:
   Crystal * fCrystalMap[30][30];
   Crystal * fCrystalList[900]; //30*30 will be energy sorted 

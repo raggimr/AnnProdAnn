@@ -8,7 +8,6 @@
 #include <iostream>
 #include "cstdlib"
 #include "math.h"
-#include "../include/Constants.hh"
 
 using namespace std;
 
@@ -159,10 +158,12 @@ Int_t Read101::SelectAnn()
 
 Double_t Read101::GGMass()
 {
+  double ECalPosiZ=180; //
   if(NClusters!=2)                        return -1;  // Need 2 clusters
   double XDiff2 = (XCluster[0]-XCluster[1])*(XCluster[0]-XCluster[1]);
   double YDiff2 = (YCluster[0]-YCluster[1])*(YCluster[0]-YCluster[1]);
-  double Massa  = sqrt(ECluster[0]*ECluster[1]*(XDiff2+YDiff2))/(ECalPosiZ-ECalSizeZ*0.5);
+  //  double Massa  = sqrt(ECluster[0]*ECluster[1]*(XDiff2+YDiff2))/(ECalPosiZ-ECalSizeZ*0.5);
+  double Massa  = sqrt(ECluster[0]*ECluster[1]*(XDiff2+YDiff2))/(ECalPosiZ);
   //  cout<<"Massa "<<Massa<<endl;
   return Massa;
 }

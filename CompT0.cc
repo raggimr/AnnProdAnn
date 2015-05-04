@@ -6,7 +6,6 @@
 #include <iostream>
 #include "cstdlib"
 #include "math.h"
-#include "../include/Constants.hh"
 using namespace std;
 
 double CompT0::DoT0(char* ListT0)

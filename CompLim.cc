@@ -5,7 +5,6 @@
 #include <iostream>
 #include "cstdlib"
 #include "math.h"
-#include "../include/Constants.hh"
 using namespace std;
 
 double CompLim::CompLimVis(double NBG, double Ngg,double Accgg,double AccUg,double Delta)
