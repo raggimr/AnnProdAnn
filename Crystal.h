@@ -1,41 +1,57 @@
 #ifndef Crystal_h
 #define Crystal_h
-#include "Histo.h"
+
+#define CRYSTAL_STATUS_BIT_USED 0
+#define CRYSTAL_STATUS_BIT_SEED 1
 
 class Crystal {
 
-public :
+ public :
+ 
   Crystal(int ,int);
   ~Crystal();
   
  public :
+
   double GetEnergy()  {return fEnergy;};
   double GetTime()    {return fTime;};	
   double GetCharge()  {return fCharge;};
 
-  double GetXCenter();
-  double GetYCenter();
+  double SetEnergy(double e)   { fEnergy=e; };
+  double SetTime(double t)     { fTime=t; };	
+  double SetCharge(double cha) { fCharge=cha; };
 
-  int    GetXi()      {return fXi;};	
-  int    GetYi()      {return fYi;};	
-  int    IsUsed()     {return fUsed;};	
-  int    IsSeed()     {return fSeed;};  
+  double GetXCenter() {return fXCenter;};
+  double GetYCenter() {return fYCenter;};
+  double GetZCenter() {return fZCenter;};
 
-  double SetEnergy(double e)  {fEnergy=e;};
-  double SetTime(double t)    {fTime=t;};	
-  double SetCharge(double cha)  {fCharge=cha;};
-  void    SetUsed()     {fUsed=1;};	
-  void    ResetUsed()   {fUsed=0;};	
-  void    SetSeed()     {fSeed=1;};  
-  void    ResetSeed()   {fSeed=0;};
+  int GetXi() {return fXi;};
+  int GetYi() {return fYi;};
+
+  bool IsUsed() {return fStatus & (1 << CRYSTAL_STATUS_BIT_USED);};
+  bool IsSeed() {return fStatus & (1 << CRYSTAL_STATUS_BIT_SEED);};
+
+  void SetUsed()   { fStatus |=  (1 << CRYSTAL_STATUS_BIT_USED); };
+  void ResetUsed() { fStatus &= ~(1 << CRYSTAL_STATUS_BIT_USED); };
+  void SetSeed()   { fStatus |=  (1 << CRYSTAL_STATUS_BIT_SEED); };
+  void ResetSeed() { fStatus &= ~(1 << CRYSTAL_STATUS_BIT_SEED); };
+
   void  Print();
+
  private:
+
+  int fXi;	 
+  int fYi;
+
+  int fStatus;
+
+  double fXCenter;
+  double fYCenter;
+  double fZCenter;
+
   double fEnergy;
   double fTime;	 
   double fCharge;
-  int fXi;	 
-  int fYi;	 
-  int fUsed;	 
-  int fSeed;  
+
 };
 #endif

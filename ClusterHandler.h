@@ -1,26 +1,32 @@
 #ifndef ClusterHandler_h
 #define ClusterHandler_h
-#include "Histo.h"
+
 #include "Cluster.h"
-#define NMAXCLUSTERS 20
+
+#define CLUSTERHANDLER_N_MAX_CLUSTERS 20
+
 class ClusterHandler {
 
-public :
+ public :
+
   ClusterHandler();
   ~ClusterHandler();
   
  public :
-  //  int FindSeeds(double thr); //returns Nseeds with E>thr
 
   int GetNClusters(){return fNClusters;};
-  void SortEnergy();
   void Print();
 
-  Cluster * GetCluster(int );  //return pointer from cluster
-  Cluster * NewCluster();      //Create a new cluster and return pointer
+  Cluster* NewCluster(); //Create a new cluster and return pointer
+  Cluster* GetCluster(int);
+
+  // Erase results from previous cluster findings
+  void ResetClusters();
 
  private:
-  Cluster * fClusterList[NMAXCLUSTERS];
+
   int fNClusters; 
+  Cluster * fClusterList[CLUSTERHANDLER_N_MAX_CLUSTERS];
+
 };
 #endif

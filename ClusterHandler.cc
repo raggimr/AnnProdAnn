@@ -1,6 +1,4 @@
-#include <algorithm>
 #include "ClusterHandler.h"
-#include "Histo.h"
 
 #include <iostream>
 #include "cstdlib"
@@ -16,23 +14,37 @@ ClusterHandler::ClusterHandler()
 
 ClusterHandler::~ClusterHandler()
 {
-  // Kill all pointers to the cluster of the event
+  ResetClusters();
+}
+
+void ClusterHandler::ResetClusters()
+{
+  // Kill all existing clusters and reset counter
   for(int kk; kk<fNClusters;kk++){
     delete fClusterList[kk];
   }
+  fNClusters = 0;
 }
 
 Cluster* ClusterHandler::NewCluster()
 {
-  Cluster * clu = new Cluster();
-  fClusterList[fNClusters++]=clu;
-  return clu;
+  if(fNClusters<CLUSTERHANDLER_N_MAX_CLUSTERS){
+    Cluster * clu = new Cluster();
+    fClusterList[fNClusters++]=clu;
+    return clu;
+  } else {
+    cout<<"WARNING - ClusterHandler::NewCluster - Too many clusters in event: "<<fNClusters<<endl;
+    return 0;
+  }
 }
 
 Cluster* ClusterHandler::GetCluster(int i)
 {
-  if(i>=0 && i<fNClusters) return fClusterList[i];
-  return 0;
+  if (i<0 || i>=fNClusters) {
+    cout<<"WARNING - ClusterHandler::GetCluster - Attept to access cluster outside list: "<<i<<endl;
+    return 0;
+  }
+  return fClusterList[i];
 }
 
 void ClusterHandler::Print()

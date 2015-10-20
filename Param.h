@@ -14,6 +14,7 @@ public :
   void WriteParam();
   double GetAnnCross(){return AnnCross;};
   double Get3gCross(){return tregCross;};
+  double Get3gProb() {return tregProb;};
   double GetInvFlag(){return IsInvAnOn;};
   double GetVisFlag(){return IsVisAnOn;};
   double GetDoAcc()  {return IsDoAcc;};

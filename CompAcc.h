@@ -9,16 +9,19 @@ public :
   
   double CompAccVis(char* ListVis, int nacc);
   double CompAccInv(char* ListInv, int nacc);
+
   double GetAccInv(int Nacc) {return fAccInv;};
   double GetAccInvE(int Nacc){return fEAccInv;};
 
   double GetAccVis(int Nacc) {return fAccVis;};
   double GetAccVisE(int Nacc){return fEAccVis;};
 
+  void FillMassRes();
+
 public :
 
  private:
-  //  Histo* his; 
+  Histo* his; 
   Double_t fAccInv;
   Double_t fEAccInv;
 

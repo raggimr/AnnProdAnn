@@ -66,6 +66,9 @@ double CompAcc::CompAccInv(char* ListInv, int nacc)
   fAccInv=NSel/fNDP;
   fEAccInv=sqrt(fAccInv*(1-fAccInv))/sqrt(fNDP);
   cout<<"N DP "<<fNDP<<" Event Selected "<<NSel<<" Acc "<<fAccInv<<" +/- "<<fEAccInv<<endl;
+  
+
+
   fileIn->Close();
   return 1;
 }
@@ -74,7 +77,7 @@ double CompAcc::CompAccInv(char* ListInv, int nacc)
 #ifdef CompAcc_cxx
 CompAcc::CompAcc()
 {
-  //  his = Histo::GetInstance();
+  his = Histo::GetInstance();
 //  printf("Calling Init histograms ");
 }
 //

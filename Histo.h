@@ -24,18 +24,19 @@ public :
   Param* par;
 
   TList* hListGen;  
-  TH1D* hNTracks; 
-  TH1D* hETracks;
+  TList* hListComp;  
 
+  TH1D* hNPosTrks; 
+  TH1D* hNHiPosVeto;
+  TH1D* hNSAC;   
+  TH1D* hNCluster;
+  TH1D* hNSACCut; 
+
+  TH1D* hETracks;
   TH1D* hNTracksRec; 
   TH1D* hETracksRec;
   TH1D* hEtotVis;
- 
-  TH1D* hNCluster;
-  TH1D* hNPosVeto;
   TH1D* hEPosVeto;
-  TH1D* hNSAC;   
-  TH1D* hNSACCut; 
 
   TH2D* hClusterMap; 
   TH2D* hClusterEvsR; 
@@ -55,16 +56,26 @@ public :
   TH1D* hESAC3gSAC;
 
   TH1D* hGGMass;
+
   TH1D* hAccVisEtrk;
 
-  TH1D* hAccM2Miss;  
-  TH1D* hAccClusterE;
+  TH1D ** hEClusterCut;
+  TH1D ** hMMissCut;
 
-  TH2D ** hInvThEi;
+  TH1D ** hAccM2Miss;  
+  TH1D ** hAccClusterE;
   TH2D ** hAccThEi;
+  TH2D ** hAccClEvsMM2;
+   
   TH1D ** hInvEiTrk;
   TH1D ** hInvMMiss2i;
-  TH2D ** hAccClEvsMM2;   
+  TH2D ** hInvThEi;
+
+  TH1D* hNCluDiff;
+  TH1D* hECluDiff;
+
+  //  TH1D* histo9;
+
 
   static Histo* fInstance;
   

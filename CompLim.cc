@@ -21,7 +21,7 @@ double CompLim::CompLimInv(double NBG, double Ngg, double Accgg,double AccUg,dou
 {
   Double_t   NLimit=0;
   if(NBG==0) NBG=1.29;  //68% CL
-  cout<< "Limite "<<NBG<<" "<<Ngg<<" "<<Accgg<<" "<<AccUg<<" "<<Delta<<endl;
+  //  cout<< "Limite "<<NBG<<" "<<Ngg<<" "<<Accgg<<" "<<AccUg<<" "<<Delta<<endl;
   NLimit=(sqrt(NBG)/Ngg)*(Accgg/AccUg)/Delta;
   return NLimit;
   // printf("Computing Invisible limit using %f %f\n",NBG,Ngg);

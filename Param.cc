@@ -29,11 +29,11 @@ void Param::InitParam()
     exit(-1);
   }
   printf("Parameter file succesfully opened\n");
-  fgets(line,100,parfile);
-  if(line[0]=='#') fgets(line,100,parfile);
+  fgets(line,160,parfile);
+  if(line[0]=='#') fgets(line,160,parfile);
   sscanf(line,"%f %f %f %f %d",&IsInvAnOn,&IsVisAnOn,&IsDoAcc,&Is3gOn,&NMasses);
-  fgets(line,100,parfile);
-  if(line[0]=='#') fgets(line,100,parfile);
+  fgets(line,160,parfile);
+  if(line[0]=='#') fgets(line,160,parfile);
   sscanf(line,"%f %f %f",&AnnCross,&tregCross,&Dtarg);
   //Compute annihilation probability on carbon 
   Double_t ZN = 6.;
@@ -44,24 +44,24 @@ void Param::InitParam()
   Double_t VT = Dtarg;     //in cm3
   AnnProb = sigmaAnni*ZN*NA*RC*VT/MC;
   tregProb= tregCross*1e-36*ZN*NA*RC*VT/MC;;
-  cout<<Dtarg<<" AnnProb "<<AnnProb<<" 3gProb "<<tregProb<<endl;
+  cout<<"Targ th "<<Dtarg<<" AnnProb "<<AnnProb<<" 3gProb "<<tregProb<<endl;
   // Get the ee->Ug cross at 550MeV
   fgets(line,100,parfile);
-  if(line[0]=='#') fgets(line,100,parfile);
+  if(line[0]=='#') fgets(line,160,parfile);
   char *data = line;
-  int i=0;			
+  int i=0;
   while (sscanf(data, " %f%n", &valo, &offset) == 1)
     {
       sigmaUg[i] = valo;
       data += offset;
       Delta[i]=sigmaUg[i]*1E6/AnnCross; //go to eps=1
-      //      cout<<sigmaUg[i]<<" "<<AnnCross<<" Delta "<<Delta[i]<<endl;
+      //      cout<<sigmaUg[i]<<" "<<AnnCross<<" Delta "<<Delta[i]<<" i "<<i<<endl;
       i++;
     }
   
   // Get the ee->Ug cross at 750MeV
-  fgets(line,100,parfile);
-  if(line[0]=='#') fgets(line,100,parfile);
+  fgets(line,160,parfile);
+  if(line[0]=='#') fgets(line,160,parfile);
   char *data1 = line;
   int j=0;			
   while (sscanf(data1, " %f%n", &valo, &offset) == 1)
@@ -69,7 +69,7 @@ void Param::InitParam()
       sigmaUg750[j] = valo;
       data1 += offset;
       Delta750[j]=sigmaUg750[j]*1E6/AnnCross; //go to eps=1
-      //      cout<<sigmaUg[i]<<" "<<AnnCross<<" Delta "<<Delta[i]<<endl;
+      //      cout<<"750 "<<sigmaUg750[j]<<" "<<AnnCross<<" Delta "<<Delta750[j]<< " j " <<j<<endl;
       j++;
     }
   fclose(parfile);
@@ -78,7 +78,7 @@ void Param::InitParam()
 void Param::InitCut()
 {
   FILE *cutfile;
-  char line[200];
+  char line[200];// "";
   int offset;
   float valo;
   int i=0;
@@ -91,27 +91,28 @@ void Param::InitCut()
   //  printf("NMasses %d\n",NMasses);
   printf("Cut file succesfully opened\n");
 
-  fgets(line,100,cutfile);
-  if(line[0]=='#') fgets(line,100,cutfile);
+  fgets(line,160,cutfile);
+  cout<<line<<endl;
+  while(line[0]=='#') fgets(line,160,cutfile);
   sscanf(line,"%f %f",&MinClRad,&MaxClRad);
 
-  fgets(line,100,cutfile);
-  if(line[0]=='#') fgets(line,100,cutfile);
+  fgets(line,160,cutfile);
+  while(line[0]=='#') fgets(line,160,cutfile);
   sscanf(line,"%f %f",&TWindInv,&TWindVis);
 
-  fgets(line,100,cutfile);
-  if(line[0]=='#') fgets(line,100,cutfile);
+  fgets(line,160,cutfile);
+  while(line[0]=='#') fgets(line,160,cutfile);
   char *data = line;			
   //  printf("%s",line);
   while (sscanf(data, " %f%n", &valo, &offset) == 1)
     {
       MinClEne[i] = valo; //MinClEne->PushBack(valo)
       data += offset;
+      //      printf("read: %f", MinClEne[i]);
       i++;
-      //     printf("read: %f", MinClEne[i]);
     }
-  fgets(line,100,cutfile);
-  if(line[0]=='#') fgets(line,100,cutfile);
+  fgets(line,160,cutfile);
+  while(line[0]=='#') fgets(line,160,cutfile);
   i=0;
   char *data1 = line;			
   while (sscanf(data1, " %f%n", &valo, &offset) == 1)
@@ -119,12 +120,12 @@ void Param::InitCut()
   
       MaxClEne[i] = valo;
       data1 += offset;
+      //      printf("read: %f", MaxClEne[i]);
       i++;
-      //     printf("read: %f", MinClEne[i]);
     }
 
-  fgets(line,100,cutfile);
-  if(line[0]=='#') fgets(line,100,cutfile);
+  fgets(line,160,cutfile);
+  while(line[0]=='#') fgets(line,160,cutfile);
   i=0;
   char *data2 = line;			
   while (sscanf(data2, " %f%n", &valo, &offset) == 1)
@@ -132,11 +133,11 @@ void Param::InitCut()
       MeanMM2[i] = valo;
       data2 += offset;
       i++;
-      //     printf("read: %f", MinClEne[i]);
+      //      printf("read: %f", MeanMM2[i]);
     }
 
-  fgets(line,100,cutfile);
-  if(line[0]=='#') fgets(line,100,cutfile);
+  fgets(line,160,cutfile);
+  while(line[0]=='#') fgets(line,160,cutfile);
   i=0;
   char *data3 = line;			
   while (sscanf(data3, " %f%n", &valo, &offset) == 1)
@@ -147,16 +148,16 @@ void Param::InitCut()
       //     printf("read: %f", MinClEne[i]);
     }
 
-  fgets(line,100,cutfile);
-  if(line[0]=='#') fgets(line,100,cutfile);
+  fgets(line,160,cutfile);
+  while(line[0]=='#') fgets(line,160,cutfile);
   i=0;
   char *data4 = line;			
   while (sscanf(data4, " %f%n", &valo, &offset) == 1)
     {
       UMass[i] = valo;
       data4 += offset;
+      //      printf("read: %f\n", UMass[i]);
       i++;
-      //     printf("read: %f", MinClEne[i]);
     }
 }
 

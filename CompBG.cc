@@ -1,6 +1,7 @@
 #define CompBG_cxx
 #include "CompBG.h"
 #include "Read101.h"
+#include "Histo.h"
 
 #include <iostream>
 #include "cstdlib"
@@ -8,6 +9,9 @@
 
 #include "CrystalHandler.h"
 #include "Crystal.h"
+#include "ClusterFinder.h"
+#include "ClusterFinderBox.h"
+#include "Cluster.h"
 
 using namespace std;
 
@@ -44,7 +48,9 @@ void CompBG::CompBackG(char* ListBG, int nprim)
     TFile * fileIn  = TFile::Open(Line,"read");   //Open data File!
     TTree * tree  = (TTree*) fileIn->Get("U101");
     TH1D* hist1 = (TH1D*)fileIn->Get("h1");
+    //    hist1 = (TH1D*)fileIn->Get("h1");
     NtotE = hist1->GetEntries();
+
     cout<<"Nentries "<<tree->GetEntriesFast()<<" "<<NtotE<<endl;
     cout<<"Total flux analized = "<<NtotE*nprim<<endl;
     cout<<"Fraction of "<<(float)(NtotE*nprim)/EOT<<endl;
@@ -52,28 +58,48 @@ void CompBG::CompBackG(char* ListBG, int nprim)
     Long64_t Nentries=Data.LoopInit();
     if (Nentries<0) return;
     while(Data.LoopNext()>=0){
-     cout<<Data.Nevent<<" Clusters "<<Data.NClusters<<" Tracks "<<Data.NTracks<<" "<<Data.NVetoTracks<<endl;
-      CrystalHandler * hand = new CrystalHandler();
+      //     cout<<Data.Nevent<<" Clusters "<<Data.NClusters<<" Tracks "<<Data.NTracks<<" "<<Data.NVetoTracks<<endl;
+      CrystalHandler * CryHand = new CrystalHandler();
       for(int ll=0;ll<900;ll++){
 	if(Data.ECell[ll]>0.){
 	  int ix=ll%30;
 	  int iy=ll/30;
 	  //	  cout<<"Filling Crystal "<<ix<<" "<<iy<<endl;
-	  Crystal * cry= hand->CreateCrystal(ix,iy);
+	  Crystal * cry= CryHand->CreateCrystal(ix,iy);
 	  cry->SetEnergy(Data.ECell[ll]);
-	  cry->SetCharge(Data.QCell[ll]);
+	  //	  cry->SetCharge(Data.QCell[ll]);
 	  //	  cry->SetTime(Data.TCell[ll]);
 	}
       }
-      cout<<"before "<<endl;
-      hand->Print();
-      hand->SortEnergy();
-      cout<<"after "<<endl;
-      hand->Print();
-//      double thr=10;
-//      hand->FindSeeds(thr);
-      delete hand; //destroy the instance
+      CryHand->SortEnergy();
 
+      // Find clusters with island algorithm
+      ClusterHandler * CluHand = new ClusterHandler();
+      ClusterFinder  * CluFind = new ClusterFinder(CryHand,CluHand);
+      CluFind->SetEThreshold(0.1);    //min thr in each crystal
+      CluFind->SetEThresholdSeed(10.); //min thr for seed crystal
+      int newNClu = CluFind->FindClusters();
+      his -> Get1DHisto("hNCluDiff")->Fill(newNClu-Data.NClusters);
+
+      // Find clusters with box algorithm
+      ClusterHandler* cluHandBox = new ClusterHandler();
+      ClusterFinderBox* cluFindBox = new ClusterFinderBox(CryHand,cluHandBox);
+      cluFindBox->SetEThreshold(0.1);    //min thr in each crystal
+      cluFindBox->SetEThresholdSeed(10.); //min thr for seed crystal
+      int newNCluBox = cluFindBox->FindClusters();
+
+      //      cout<<"New "<<newNClu<<" NT "<<Data.NClusters<<endl;
+      if(newNClu==Data.NClusters) {
+	for(int jj=0;jj<newNClu;jj++){ 
+	  //	  cout<<"Enew "<<CluHand->GetCluster(jj)->GetRawEnergy()<<" "<<Data.ECluster[jj]<<endl;
+	  his -> Get1DHisto("hECluDiff")->Fill(CluHand->GetCluster(jj)->GetRawEnergy()-Data.ECluster[jj]);
+	}
+      }
+      delete CryHand; //destroy the instance
+      delete CluHand; //destroy the instance
+      delete CluFind;
+      delete cluHandBox; //destroy the instance
+      delete cluFindBox;
       if(Data.SelectInv(1,0)==1) { //non ritorna mai perche' hai l'ananlisi in Ei
 	his -> Get1DHisto("hNCluster")->Fill(Data.NClusters);
 	his -> Get1DHisto("hNSAC")->Fill(Data.NSAC);
@@ -86,7 +112,7 @@ void CompBG::CompBackG(char* ListBG, int nprim)
       if(Data.SelectVis(1,0)==1) {
 	NBGVis++;
       }
-      his -> Get1DHisto("hNPosVeto")->Fill(Data.NVetoTracks);
+      //      his -> Get1DHisto("hNPosVeto")->Fill(Data.NVetoTracks);
       if(Data.SelectAnn()==1){
 	NAnn++;
       }
@@ -107,7 +133,7 @@ void CompBG::Comp3gBG(char* List3G, int nprim)
   FILE* pbg;
   char Line[100];
   Read101 Data;
-  Double_t EOT= 1e13;
+  Int_t EOT=1E13;
   printf("Analizing list %s\n",List3G);
   pbg  = fopen(List3G,"r");
   if (pbg == NULL){
@@ -123,13 +149,18 @@ void CompBG::Comp3gBG(char* List3G, int nprim)
     TTree * tree  = (TTree*) fileIn->Get("U101");
     TH1D* hist1 = (TH1D*)fileIn->Get("h1");
     NtotE = hist1->GetEntries();
+
+    Param* par = Param::GetInstance();
+    double ThreeGp = par->Get3gProb();
+    Int_t NMaxEvents=NtotE*ThreeGp;
+    cout<<"Nmax 3g events "<<NMaxEvents<<endl;
     cout<<"Nentries "<<tree->GetEntriesFast()<<" "<<NtotE<<endl;
     cout<<"Total flux analized = "<<NtotE*nprim<<endl;
     cout<<"Fraction of "<<(float)(NtotE*nprim)/EOT<<endl;
     Data.Init(tree);
     Long64_t Nentries=Data.LoopInit();
     if (Nentries<0) return;
-    while(Data.LoopNext()>=0){
+    while(Data.LoopNext()>=0 && Data.Nevent<NMaxEvents){
       //cout<<Data.Nevent<<" Clusters "<<Data.NClusters<<" Tracks "<<Data.NTracks<<" "<<Data.NVetoTracks<<endl;
       if(Data.SelectInv(3,0)==1) { //flag 3 for 3g analysis
 	his -> Get1DHisto("hNCluster")->Fill(Data.NClusters);

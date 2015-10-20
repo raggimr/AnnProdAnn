@@ -1,6 +1,7 @@
 #ifndef CompT0_h
 #define CompT0_h
 #include "Histo.h"
+#include "GeomParam.h"
 
 class CompT0 {
 public :
@@ -17,6 +18,7 @@ public :
   double CorrectTrackEVeto(Double_t TrackP);
   
 public :
+  GeomParam* geo;
 
 };
 #endif

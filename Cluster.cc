@@ -1,20 +1,12 @@
 #include "Cluster.h"
+
 #include "Crystal.h"
-#include "Histo.h"
 
 #include <iostream>
 #include "cstdlib"
 #include "math.h"
 
 using namespace std;
-
-//  ECAL Dimension
-const double CalSizeX =30.;   //in cm
-const double CalSizeY =30.;   //in cm
-const double CalSizeZ =22.;   //in cm full scale length
-
-const int CalNRow       = 30;
-const int CalNCol       = 30;
 
 //Costruttore
 Cluster::Cluster()
@@ -28,21 +20,45 @@ Cluster::Cluster()
 }
 
 Cluster::~Cluster()
-{
-
-}
+{;}
 
 int Cluster::AddCrystal(Crystal* crystal)
 {
-  if(fNCrystals<NMAXCRYSTALSINCLUSTER){
+  if (crystal->IsUsed()) {
+    cout<<"ERROR - Cluster::AddCrystal - Try to add already USED crystal"<<endl;
+    return -1;
+  }
+  if(fNCrystals<CLUSTER_N_MAX_CRYSTALS_IN_CLUSTER){
     fCrystalList[fNCrystals]=crystal;
     fNCrystals++;
     crystal->SetUsed();
+    fRawEnergy += crystal->GetEnergy();
+    return fNCrystals;
+  } else {
+    cout<<"WARNING - Cluster::AddCrystal - Too many crystals in cluster: "<<fNCrystals<<endl;
     return fNCrystals;
   }
 }
 
 void Cluster::Print()
 {
-  cout<<fXCenter<<" "<<fYCenter<<" Energy "<<fEnergy<<" Raw Energy "<<fRawEnergy<<" Time "<<fTime<<endl;
+  cout<<"X "<<fXCenter<<" Y "<<fYCenter<<" Energy "<<fEnergy<<" Raw Energy "<<fRawEnergy<<" Time "<<fTime<<" NCry "<<fNCrystals<<endl;
+}
+
+double Cluster::ComputeTime()
+{
+  cout<<"WARNING - Cluster::ComputeTime - Not implemented"<<endl;
+  return 0.;
+}
+
+double Cluster::ComputeEnergy()
+{
+  cout<<"WARNING - Cluster::ComputeEnergy - Not implemented"<<endl;
+  return 0.;
+}
+
+double Cluster::ComputeCenter()
+{
+  cout<<"WARNING - Cluster::ComputeCenter - Not implemented"<<endl;
+  return 0.;
 }

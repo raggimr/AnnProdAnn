@@ -1,7 +1,6 @@
-#define Crystal_cxx
 #include "Crystal.h"
-#include "Read101.h"
-#include "Histo.h"
+
+#include "GeomParam.h"
 
 #include <iostream>
 #include "cstdlib"
@@ -9,55 +8,48 @@
 
 using namespace std;
 
-
-
-//  ECAL Dimension
-const double CalSizeX =30.;   //in cm
-const double CalSizeY =30.;   //in cm
-const double CalSizeZ =22.;   //in cm full scale length
-
-const int CalNRow       = 30;
-const int CalNCol       = 30;
-
 //Costruttore
-#ifdef Crystal_cxx
 Crystal::Crystal(int ix ,int iy)
 {
+
+  GeomParam* geo = GeomParam::GetInstance();
+
+  double calFrontFaceCenterX = 0.;
+  double calFrontFaceCenterY = 0.;
+  double calFrontFaceCenterZ = geo->GetECalToTarg();
+
+  int calNCryX = geo->GetNCryX();
+  int calNCryY = geo->GetNCryY();
+
+  double cryXSize = geo->GetCryXSize();
+  double cryYSize = geo->GetCryYSize();
+  double cryZSize = geo->GetCryZSize();
+
+  // Verify if crystal to be created is inside the map
+  if ( ix<0 || ix>=calNCryX || iy<0 || iy>=calNCryY ){
+    cout<<"ERROR - Crystal::Crystal - Crystal outside map: "<<ix<<" "<<iy<<endl;
+    exit(1);
+  }
+
+  fXi=ix;
+  fYi=iy;
+
+  fStatus=0;
+
   fEnergy=-1;
   fTime=-1;
   fCharge=-1;
-  fXi=ix;
-  fYi=iy;
-  fUsed=0;
-  fSeed=0;
+
+  fXCenter = calFrontFaceCenterX+cryXSize*(-0.5*calNCryX+0.5+ix);
+  fYCenter = calFrontFaceCenterY+cryYSize*(-0.5*calNCryY+0.5+iy);
+  fZCenter = calFrontFaceCenterZ+0.5*cryZSize;
 
 }
 
 Crystal::~Crystal()
-{
-
-}
-
-
-
-
-double Crystal::GetXCenter(){
-  double CryX  = CalSizeX/CalNRow;
-  double Xcoord=-CalSizeX*0.5+0.5*CryX+fXi*CryX;
-
-}
-
-double Crystal::GetYCenter(){
-  double CryY  = CalSizeY/CalNCol;
-  double Ycoord=-CalSizeY*0.5+0.5*CryY+fYi*CryY;
-}
-
-
+{;}
 
 void Crystal::Print()
 {
-  cout<<fXi<<" "<<fYi<<" "<<fUsed<<" "<<fSeed<<" Energy "<<fEnergy<<" Charge "<<fCharge<<" Time "<<fTime<<endl;
+  cout<<fXi<<" "<<fYi<<" Status "<<fStatus<<" Energy "<<fEnergy<<" Charge "<<fCharge<<" Time "<<fTime<<endl;
 }
-
-
-#endif

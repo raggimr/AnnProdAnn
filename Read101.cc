@@ -72,7 +72,7 @@ void Read101::Loop()
       Long64_t ientry = LoadTree(jentry);
       if (ientry < 0) break;
       nb = fChain->GetEntry(jentry);   nbytes += nb;
-//      cout<<""<<NClusters<<" "<<NTracks<<" "<<NVetoTracks<<endl;
+
 //      hNTracks ->Fill(NTracks);
 //      hNCluster->Fill(NClusters);
 //      hNPosVeto->Fill(NVetoTracks);
@@ -141,7 +141,6 @@ Int_t Read101::SelectAnn()
   Int_t ii;
   Double_t MinClRad=par->GetMinClRad();
   Double_t MaxClRad=par->GetMaxClRad();
-
   if(NClusters!=2)   return -1; // add timing cuts on the clusters
   for(ii=0;ii<2;ii++){          // clusters acceptance
     ClRad[ii]= sqrt(XCluster[ii]*XCluster[ii]+YCluster[ii]*YCluster[ii]);
@@ -158,7 +157,7 @@ Int_t Read101::SelectAnn()
 
 Double_t Read101::GGMass()
 {
-  double ECalPosiZ=180; //
+  double ECalPosiZ=200; //
   if(NClusters!=2)                        return -1;  // Need 2 clusters
   double XDiff2 = (XCluster[0]-XCluster[1])*(XCluster[0]-XCluster[1]);
   double YDiff2 = (YCluster[0]-YCluster[1])*(YCluster[0]-YCluster[1]);
@@ -182,48 +181,60 @@ Int_t Read101::SelectInv(Int_t Doplot,Int_t nacc)
   Double_t TWind   = par->GetTWindInv();
   Double_t MinClRad= par->GetMinClRad();
   Double_t MaxClRad= par->GetMaxClRad();
-
+  if(Doplot==1){
+    for(int ii=0;ii<NClusters;ii++){
+      his -> Get1DHisto("hEClusterCut0")->Fill(ECluster[ii]);
+      his -> Get1DHisto("hMMissCut0") ->Fill(M2Cluster[ii]);
+    }
+  }
   if(NClusters!=1.) return 0;
+  if(Doplot==1) his -> Get1DHisto("hEClusterCut1")->Fill(ECluster[0]);
+  if(Doplot==1) his -> Get1DHisto("hMMissCut1") ->Fill(M2Cluster[0]);
+
   double ClRad = sqrt(XCluster[0]*XCluster[0]+YCluster[0]*YCluster[0]);
   if(Doplot==1) his -> Get1DHisto("hClusterEvsR")->Fill(ECluster[0],ClRad);
-  if(ClRad<MinClRad || ClRad>MaxClRad)                return 0;  // Geometrical Cuts
-  if(ECluster[0]>400. || ECluster[0]<20.) return 0;  // Cluster Energy Cuts
+
+  if(ClRad<MinClRad || ClRad>MaxClRad)    return 0;  // Geometrical Cuts
+  if(ECluster[0]>650. || ECluster[0]<10.) return 0;  // Cluster Energy Cuts
 
   if(Doplot==1){
-    his -> Get2DHisto("hClusterMap")->Fill(XCluster[0],YCluster[0]);
-    his -> Get1DHisto("hClusterE")  ->Fill(ECluster[0]);
-    his -> Get1DHisto("hClusterRad")->Fill(ClRad);
-    his -> Get1DHisto("hNTracks")   ->Fill(NTracks);
-    for(int ll=0; ll<NTracks; ll++){ 
-      his -> Get1DHisto("hETracks")->Fill(ETracker[ll]);
-      if(TrackerLay[ll]<=8 || TrackerLay[ll]==17){
-	his -> Get1DHisto("hETracksRec")->Fill(ETracker[ll]);
-	NGoodTrk++;
-      }
-    }
-    his -> Get1DHisto("hNTracksRec")->Fill(NGoodTrk);
-    his -> Get1DHisto("hNPosVeto")  ->Fill(NVetoTracks);
+    his -> Get1DHisto("hEClusterCut2")->Fill(ECluster[0]);
+    his -> Get1DHisto("hMMissCut2") ->Fill(M2Cluster[0]);
+    his -> Get2DHisto("hClusterMap") ->Fill(XCluster[0],YCluster[0]);
+    his -> Get1DHisto("hClusterRad") ->Fill(ClRad);
+    his -> Get1DHisto("hNPosTrks")   ->Fill(NPosVetoTracks);
+    his -> Get1DHisto("hNHiPosVeto") ->Fill(NVetoTracks);
     for(int ll=0; ll<NVetoTracks; ll++) his -> Get1DHisto("hEPosVeto")->Fill(VetoTrEne[ll]);
   }
+  
   NInTimeTrk  = IsTrkInTime(0,TWind);
   NInTimeVeto = IsVetoInTime(0,TWind);
   NInTimeSAC  = IsSACInTime(0,TWind);
-  for(int i=0;i<NTracks;i++)     his -> Get1DHisto("hDtTrkCl")->Fill(DtTrkCl[i]);
-  for(int i=0;i<NVetoTracks;i++) his -> Get1DHisto("hDtVetoCl")->Fill(DtVetoCl[i]);
-  for(int i=0;i<NSAC;i++)        his -> Get1DHisto("hDtSACCl")->Fill(DtSACCl[i]);
-    
-  //  cout<<"Nintime "<<NInTimeTrk<<" Veto "<<NInTimeVeto<<" "<<NInTimeSAC<<" "<<ECluster[0]<<endl;
+  //  cout<<" "<<NInTimeTrk<<" " <<NInTimeVeto<<" "<<NInTimeSAC<<endl;
+  
+  for(int i=0;i<NPosVetoTracks;i++)  his -> Get1DHisto("hDtTrkCl") -> Fill(DtTrkCl[i]);
+  for(int i=0;i<NVetoTracks;i++)     his -> Get1DHisto("hDtVetoCl")-> Fill(DtVetoCl[i]);
+  for(int i=0;i<NSAC;i++)            his -> Get1DHisto("hDtSACCl") -> Fill(DtSACCl[i]);
   if(Doplot==1) his -> Get1DHisto("hM2Miss")->Fill(M2Cluster[0]);
-  if(NInTimeTrk>0) return 0;
+  if(NInTimeTrk>0) return 0;  //CUT ON TRACKS
+  if(Doplot==1) his -> Get1DHisto("hEClusterCut3")->Fill(ECluster[0]);
+  if(Doplot==1) his -> Get1DHisto("hMMissCut3") ->Fill(M2Cluster[0]);
   if(Doplot==3) his -> Get1DHisto("hM2Miss3g")->Fill(M2Cluster[0]);
-  //  if(Doplot==3) his -> Get1DHisto("hESAC3g")->Fill(ESAC);
-  //  if(NInTimeTrk>0 || NInTimeVeto>0) return 0; 
-  if(NInTimeSAC>0) return 0; 
+
+  if(NInTimeTrk>0 || NInTimeVeto>0) return 0;  //CUT ON extra TRACKS 
+  if(Doplot==1) his -> Get1DHisto("hEClusterCut4")->Fill(ECluster[0]);
+  if(Doplot==1) his -> Get1DHisto("hMMissCut4") ->Fill(M2Cluster[0]);
+
+  if(NInTimeSAC>0) return 0;  //CUT ON SAC
+  if(Doplot==1) his -> Get1DHisto("hEClusterCut5")->Fill(ECluster[0]);
+  if(Doplot==1) his -> Get1DHisto("hMMissCut5") ->Fill(M2Cluster[0]);
   if(Doplot==3) his -> Get1DHisto("hM2Miss3gSAC")->Fill(M2Cluster[0]);
 
   if(Doplot==1 || Doplot==3){ //1 means BG analysis or 3 means 3G analysis
     if(Doplot==1) his -> Get1DHisto("hM2MissVeto")->Fill(M2Cluster[0]);
+    if(Doplot==1) his -> Get1DHisto("hClusterE")  ->Fill(ECluster[0]);
     his -> Get2DHisto("hClEvsMM2")->Fill(ECluster[0],M2Cluster[0]);
+
     for(int kk=0;kk<11;kk++){
       if(ECluster[0]<par->GetMinECl(kk) || ECluster[0]>par->GetMaxECl(kk)) continue;
       if(M2Cluster[0]< (par->GetMeanMM2(kk)-par->GetRMSMM2(kk)) || M2Cluster[0]>(par->GetMeanMM2(kk)+par->GetRMSMM2(kk)) ) continue;
@@ -236,9 +247,9 @@ Int_t Read101::SelectInv(Int_t Doplot,Int_t nacc)
       //      cout<<"Pbeam "<<NBG3gMass[kk]<<endl;
     }
   }else if(Doplot==2){ //Acceptance analysis
-    his -> Get1DHisto("hAccM2Miss")  ->Fill(M2Cluster[0]);
-    his -> Get1DHisto("hAccClusterE")->Fill(ECluster[0]);
+    his -> Get1DHisto(Form("hAccClusterE%d",nacc)) -> Fill(ECluster[0]);
     if(ECluster[0]<par->GetMinECl(nacc) || ECluster[0]>par->GetMaxECl(nacc)) return 0;
+    his -> Get1DHisto(Form("hAccM2Miss%d",nacc))  -> Fill(M2Cluster[0]);
     if(M2Cluster[0]< (par->GetMeanMM2(nacc)-par->GetRMSMM2(nacc)) || M2Cluster[0]>(par->GetMeanMM2(nacc)+par->GetRMSMM2(nacc)) ) return 0;
     his -> Get2DHisto(Form("hAccClEvsMM2%d",nacc))->Fill(ECluster[0],M2Cluster[0]); 
     his -> Get2DHisto(Form("hAccThEi%d",nacc)) ->Fill(ECluster[0],ThCluster[0]);
@@ -246,15 +257,14 @@ Int_t Read101::SelectInv(Int_t Doplot,Int_t nacc)
   return 1;
 }
 
-//Track to Cluster timing
+//Track to Cluster timing now for positron veto only 
 Int_t Read101::IsTrkInTime(int nclu, double wind)
 {
   int InTime=0;
-  for(int i=0;i<NTracks;i++) InTimeTrkInd[i]=0;
-  
-  for(int i=0;i<NTracks;i++){
-    if(ETracker[i]>2.){
-      DtTrkCl[i]=(TCluster[nclu]-T0->CorrectCellT(XCluster[nclu],YCluster[nclu]))-(TTracker[i]-T0->CorrectTrackT(ETracker[i]));
+  for(int i=0;i<NPosVetoTracks;i++) InTimeTrkInd[i]=0;
+  for(int i=0;i<NPosVetoTracks;i++){
+    if(PosVetoTrEne[i]>2.){
+      DtTrkCl[i]=(TCluster[nclu]-T0->CorrectCellT(XCluster[nclu],YCluster[nclu]))-(PosVetoTrTime[i]-T0->CorrectTrackT(PosVetoTrEne[i]));
       if(fabs(DtTrkCl[i])<wind){
 	InTimeTrkInd[InTime]=i;
 	InTime++;
@@ -268,9 +278,9 @@ Int_t Read101::IsVetoInTime(int nclu, double wind) //Sbagliato!!!!!! Devi usare 
 {
   int InTime=0;
   for(int i=0;i<NVetoTracks;i++){
-    //    cout<<"Veto Y"<<VetoY[i] <<endl;
-    if(VetoTrEne[i]>2. && VetoY[i]<-760.){
-      DtVetoCl[i]=(TCluster[nclu]-T0->CorrectCellT(XCluster[nclu],YCluster[nclu]))-(VetoTrTime[i]-T0->CorrectTrackEVeto(VetoTrEne[i])); 
+    if(VetoTrEne[i]>2.&& VetoNFing[i]<49){
+      DtVetoCl[i]=(TCluster[nclu]-T0->CorrectCellT(XCluster[nclu],YCluster[nclu]))-(VetoTrTime[i]-T0->CorrectTrackEVeto(VetoTrEne[i])+10.); 
+      //      cout<<"Veto Y "<<VetoTrEne[i]<<" T0 "<<T0->CorrectCellT(XCluster[nclu],YCluster[nclu])<< "" <<DtVetoCl[i]<<endl;
       if(fabs(DtVetoCl[i])<wind) InTime++;
     }
   }
@@ -278,11 +288,23 @@ Int_t Read101::IsVetoInTime(int nclu, double wind) //Sbagliato!!!!!! Devi usare 
 }
 Int_t Read101::IsSACInTime(int nclu, double wind){
   int InTime=0;
+  int InEne=0;
+  int Flag[100]={0.};
   for(int i=0;i<NSAC;i++){
-    if(ESAC[i]>50.){
+    if(ESAC[i]>10.){
+      InEne++;
       DtSACCl[i]=(TCluster[nclu]-T0->CorrectCellT(XCluster[nclu],YCluster[nclu]))-(TSAC[i]-T0->CorrectSACT(0.,0.));
-      if(fabs(DtSACCl[i])<wind/2) InTime++;
+      if(fabs(DtSACCl[i])<wind) {
+	InTime++;
+	Flag[i]=i;
+      }
     }
   }
+  cout<<"Intime "<<InTime<<" In ENE "<<InEne<<" NSac "<<NSAC<< " wind " <<wind<<endl;
+  
+  for(int i=0;i<NSAC;i++){
+    cout<<"DtSACCl[i] "<<DtSACCl[i]<<" Flag "<< Flag[i]<<" ESAC "<<ESAC[i]<<endl;
+  }
+  cout<<"***********"<<endl;
   return InTime;
 }

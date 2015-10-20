@@ -7,6 +7,7 @@
 double AccInvMu[20];
 double AccVisMu[20];
 TGraph * gSensInv;
+TGraph * gSnglSensInv;
 TGraph * gSensVis;
 TGraph * gDelta;
 TGraph * gDelta750;

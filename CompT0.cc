@@ -3,6 +3,7 @@
 #include "Read101.h"
 #include "Histo.h"
 
+
 #include <iostream>
 #include "cstdlib"
 #include "math.h"
@@ -35,6 +36,7 @@ double CompT0::DoT0(char* ListT0)
 #ifdef CompT0_cxx
 CompT0::CompT0()
 {
+  geo  = GeomParam::GetInstance();
 //  printf("Calling Init histograms ");
 }
 //
@@ -45,39 +47,44 @@ CompT0::~CompT0()
 
 double CompT0::CorrectCellT(Double_t XCell, Double_t YCell)
 {
+
   double TCorr;
-  const double ZTarg = -20.; //cm
+  const double ZTarg = geo->GetTargetZ(); //cm
   const double XTarg = 0;
   const double YTarg = 0;
-  const double ZCal  = 160.; // cm
+  const double ZCal  = geo->GetECalZ(); //cm
   const double C     = 3E10; // cm/s
-  //  TCorr=sqrt((XCell-XTarg)*(XCell-XTarg)+(YCell-YTarg)*(YCell-YTarg)+(ZCal-ZTarg)*(ZCal-ZTarg))/C;
-  //  return TCorr*1e9; //Return time in ns
-  TCorr=6.3;
-  return TCorr;
+  TCorr=sqrt((XCell-XTarg)*(XCell-XTarg)+(YCell-YTarg)*(YCell-YTarg)+(ZCal-ZTarg)*(ZCal-ZTarg))/C;
+  //  return 0;
+  return TCorr*1e9; //Return time in ns
+  //  TCorr=6.3;  //dist = 200 cm
+  //  TCorr=13;  //dist = 400 cm
+  //  return TCorr;
 }
 
 double CompT0::CorrectTrackT(Double_t TrackP){
   double TCorr;
   //  TCorr=1.27183+TrackP*0.0115232-TrackP*TrackP*2.03813e-05+1.7811e-08*TrackP*TrackP*TrackP;
-  TCorr=1.5+TrackP*0.00742-TrackP*TrackP*-1.086e-06-8.6311e-09*TrackP*TrackP*TrackP;
+  //  TCorr=1.5+TrackP*0.00742-TrackP*TrackP*-1.086e-06-8.6311e-09*TrackP*TrackP*TrackP; // 200 cm
+  TCorr=0.9875+TrackP*0.0138+TrackP*TrackP*-2.5e-05+2.e-08*TrackP*TrackP*TrackP; // 400 cm
+  if(TrackP>500.) TCorr=4.1;
   return TCorr; //Return time in ns
 }
 
 double CompT0::CorrectTrackEVeto(Double_t TrackP){
   double TCorr;
   //  TCorr=8.10461-0.0040822*TrackP+TrackP*TrackP*2.62277e-05-3.01633e-08*TrackP*TrackP*TrackP;
-  TCorr=9.7;
+  TCorr=17.4;
   return TCorr; //Return time in ns
 }
 
 double CompT0::CorrectSACT(Double_t XSAC, Double_t YSAC)
 {
   double TCorr;
-  const double ZTarg = -20.; //cm
+  const double ZTarg = geo->GetTargetZ(); //cm; //cm
   const double XTarg = 0;
   const double YTarg = 0;
-  const double ZSAC  = 224.; // cm
+  const double ZSAC  = geo->GetSACZ(); //cm.; // cm
   const double C     = 3e10; // cm/s
   TCorr=sqrt((XSAC-XTarg)*(XSAC-XTarg)+(YSAC-YTarg)*(YSAC-YTarg)+(ZSAC-ZTarg)*(ZSAC-ZTarg))/C;
   return TCorr*1e9; //Return time in ns

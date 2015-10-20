@@ -73,87 +73,123 @@ class Read101 {
   Int_t SelectAnn();
   Double_t GGMass();
   
-  // Declaration of leaf types
-  Int_t           Nevent;
-  Double_t        ETot;
-  Double_t        IDProc;
-  Double_t        PBeam;
-  Double_t        XBeam;
-  Double_t        YBeam;
-  Int_t           NClusters;
-  Int_t           NTracks;
-  Int_t           NVetoTracks;
-  Int_t           NSAC;
-  Int_t           NTarget;
-  Double_t        ESAC[100];
-  Double_t        TSAC[100];
-  Double_t        PTypeSAC[100];
-  Double_t        ECluster[20];
-  Double_t        QCluster[20];
-  Double_t        XCluster[20];
-  Double_t        YCluster[20];
-  Double_t        ThCluster[20];
-  Double_t        M2Cluster[20];
-  Double_t        TCluster[20];
-  Double_t        ECell[1000];
-  Double_t        QCell[1000];
-  Double_t        ETracker[100];
-  Double_t        TrackerLay[100];
-  Double_t        TTracker[100];
-  Double_t        ZTracker[100];
-  Double_t        XTracker[100];
-  Double_t        YTracker[100];
-  Double_t        ETarget;
-  Double_t        TTarget;
-  Double_t        XTarget;
-  Double_t        YTarget;
-  Double_t        VetoTrEne[100];
-  Int_t           VetoNFing[100];
-  Double_t        VetoTrTime[100];
-  Double_t        VetoFingE[100];
-  Double_t        VetoY[100];
-  Double_t        VetoX[100];
-  
-  // List of branches
-  TBranch        *b_Nevent;   //!
-  TBranch        *b_ETot;   //!
-  TBranch        *b_IDProc;   //!
-  TBranch        *b_PBeam;   //!
-  TBranch        *b_XBeam;   //!
-  TBranch        *b_YBeam;   //!
-  TBranch        *b_NClusters;   //!
-  TBranch        *b_NTracks;   //!
-  TBranch        *b_NVetoTracks;   //!
-  TBranch        *b_NSAC;   //!
-  TBranch        *b_NTarget;   //!
-  TBranch        *b_ESAC;   //!
-  TBranch        *b_TSAC;   //!
-  TBranch        *b_PTypeSAC;   //!
-  TBranch        *b_ECluster;   //!
-  TBranch        *b_QCluster;   //!
-  TBranch        *b_XCluster;   //!
-  TBranch        *b_YCluster;   //!
-  TBranch        *b_ThCluster;   //!
-  TBranch        *b_M2Cluster;   //!
-  TBranch        *b_TCluster;   //!
-  TBranch        *b_ECell;   //!
-  TBranch        *b_QCell;   //!
-  TBranch        *b_ETracker;   //!
-  TBranch        *b_TrackerLay;   //!
-  TBranch        *b_TTracker;   //!
-  TBranch        *b_ZTracker;   //!
-  TBranch        *b_XTracker;   //!
-  TBranch        *b_YTracker;   //!
-  TBranch        *b_ETarget;   //!
-  TBranch        *b_TTarget;   //!
-  TBranch        *b_XTarget;   //!
-  TBranch        *b_YTarget;   //!
-  TBranch        *b_NTVetoTrkEne;   //!
-  TBranch        *b_NTVetoTrkFinger;   //!
-  TBranch        *b_NTVetoTrkTime;   //!
-  TBranch        *b_NTVetoFingE;   //!
-  TBranch        *b_NTVetoX;   //!
-  TBranch        *b_NTVetoY;   //!
+   // Declaration of leaf types
+   Int_t           Nevent;
+   Double_t        ETot;
+   Double_t        IDProc;
+   Double_t        PBeam;
+   Double_t        PPrim;
+   Double_t        XBeam;
+   Double_t        YBeam;
+   Int_t           NClusters;
+   Int_t           NTracks;
+   Int_t           NVetoTracks;
+   Int_t           NPosVetoTracks;
+   Int_t           NEleVetoTracks;
+   Int_t           NSAC;
+   Int_t           NTarget;
+   Double_t        ESAC[100];
+   Double_t        TSAC[100];
+   Double_t        PTypeSAC[100];
+   Double_t        XSAC[100];
+   Double_t        YSAC[100];
+   Double_t        ECluster[20];
+   Double_t        QCluster[20];
+   Double_t        XCluster[20];
+   Double_t        YCluster[20];
+   Double_t        ThCluster[20];
+   Double_t        M2Cluster[20];
+   Double_t        TCluster[20];
+   Double_t        ECell[1000];
+   Double_t        QCell[1000];
+   Double_t        TCell[1000];
+   Double_t        ETracker[100];
+   Double_t        TrackerLay[100];
+   Double_t        TTracker[100];
+   Double_t        ZTracker[100];
+   Double_t        XTracker[100];
+   Double_t        YTracker[100];
+   Double_t        ETarget;
+   Double_t        TTarget;
+   Double_t        XTarget;
+   Double_t        YTarget;
+   Double_t        VetoTrEne[100];
+   Int_t           VetoNFing[100];
+   Double_t        VetoTrTime[100];
+   Double_t        VetoFingE[100];
+   Double_t        VetoX[100];
+   Double_t        VetoY[100];
+   Double_t        PosVetoTrEne[100];
+   Int_t           PosVetoNFing[100];
+   Double_t        PosVetoTrTime[100];
+   Double_t        PosVetoFingE[100];
+   Double_t        PosVetoX[100];
+   Double_t        PosVetoY[100];
+   Double_t        EleVetoTrEne[100];
+   Int_t           EleVetoNFing[100];
+   Double_t        EleVetoTrTime[100];
+   Double_t        EleVetoFingE[100];
+   Double_t        EleVetoX[100];
+   Double_t        EleVetoY[100];
+
+   // List of branches
+   TBranch        *b_Nevent;   //!
+   TBranch        *b_ETot;   //!
+   TBranch        *b_IDProc;   //!
+   TBranch        *b_PBeam;   //!
+   TBranch        *b_PPrim;   //!
+   TBranch        *b_XBeam;   //!
+   TBranch        *b_YBeam;   //!
+   TBranch        *b_NClusters;   //!
+   TBranch        *b_NTracks;   //!
+   TBranch        *b_NVetoTracks;   //!
+   TBranch        *b_NPosVetoTracks;   //!
+   TBranch        *b_NEleVetoTracks;   //!
+   TBranch        *b_NSAC;   //!
+   TBranch        *b_NTarget;   //!
+   TBranch        *b_ESAC;   //!
+   TBranch        *b_TSAC;   //!
+   TBranch        *b_PTypeSAC;   //!
+   TBranch        *b_XSAC;   //!
+   TBranch        *b_YSAC;   //!
+   TBranch        *b_ECluster;   //!
+   TBranch        *b_QCluster;   //!
+   TBranch        *b_XCluster;   //!
+   TBranch        *b_YCluster;   //!
+   TBranch        *b_ThCluster;   //!
+   TBranch        *b_M2Cluster;   //!
+   TBranch        *b_TCluster;   //!
+   TBranch        *b_ECell;   //!
+   TBranch        *b_QCell;   //!
+   TBranch        *b_TCell;   //!
+   TBranch        *b_ETracker;   //!
+   TBranch        *b_TrackerLay;   //!
+   TBranch        *b_TTracker;   //!
+   TBranch        *b_ZTracker;   //!
+   TBranch        *b_XTracker;   //!
+   TBranch        *b_YTracker;   //!
+   TBranch        *b_ETarget;   //!
+   TBranch        *b_TTarget;   //!
+   TBranch        *b_XTarget;   //!
+   TBranch        *b_YTarget;   //!
+   TBranch        *b_NTVetoTrkEne;   //!
+   TBranch        *b_NTVetoTrkFinger;   //!
+   TBranch        *b_NTVetoTrkTime;   //!
+   TBranch        *b_NTVetoFingE;   //!
+   TBranch        *b_NTVetoX;   //!
+   TBranch        *b_NTVetoY;   //!
+   TBranch        *b_NTPosVetoTrkEne;   //!
+   TBranch        *b_NTPosVetoTrkFinger;   //!
+   TBranch        *b_NTPosVetoTrkTime;   //!
+   TBranch        *b_NTPosVetoFingE;   //!
+   TBranch        *b_NTPosVetoX;   //!
+   TBranch        *b_NTPosVetoY;   //!
+   TBranch        *b_NTEleVetoTrkEne;   //!
+   TBranch        *b_NTEleVetoTrkFinger;   //!
+   TBranch        *b_NTEleVetoTrkTime;   //!
+   TBranch        *b_NTEleVetoFingE;   //!
+   TBranch        *b_NTEleVetoX;   //!
+   TBranch        *b_NTEleVetoY;   //!
 };
 #endif
 
@@ -202,20 +238,28 @@ void Read101::Init(TTree *tree)
    fCurrent = -1;
    fChain->SetMakeClass(1);
 
-   fChain->SetBranchAddress("Nevent", &Nevent, &b_Nevent);
+
+
+
+fChain->SetBranchAddress("Nevent", &Nevent, &b_Nevent);
    fChain->SetBranchAddress("ETot", &ETot, &b_ETot);
    fChain->SetBranchAddress("IDProc", &IDProc, &b_IDProc);
    fChain->SetBranchAddress("PBeam", &PBeam, &b_PBeam);
+   fChain->SetBranchAddress("PPrim", &PPrim, &b_PPrim);
    fChain->SetBranchAddress("XBeam", &XBeam, &b_XBeam);
    fChain->SetBranchAddress("YBeam", &YBeam, &b_YBeam);
    fChain->SetBranchAddress("NClusters", &NClusters, &b_NClusters);
    fChain->SetBranchAddress("NTracks", &NTracks, &b_NTracks);
    fChain->SetBranchAddress("NVetoTracks", &NVetoTracks, &b_NVetoTracks);
+   fChain->SetBranchAddress("NPosVetoTracks", &NPosVetoTracks, &b_NPosVetoTracks);
+   fChain->SetBranchAddress("NEleVetoTracks", &NEleVetoTracks, &b_NEleVetoTracks);
    fChain->SetBranchAddress("NSAC", &NSAC, &b_NSAC);
    fChain->SetBranchAddress("NTarget", &NTarget, &b_NTarget);
    fChain->SetBranchAddress("ESAC", ESAC, &b_ESAC);
    fChain->SetBranchAddress("TSAC", TSAC, &b_TSAC);
    fChain->SetBranchAddress("PTypeSAC", PTypeSAC, &b_PTypeSAC);
+   fChain->SetBranchAddress("XSAC", XSAC, &b_XSAC);
+   fChain->SetBranchAddress("YSAC", YSAC, &b_YSAC);
    fChain->SetBranchAddress("ECluster", ECluster, &b_ECluster);
    fChain->SetBranchAddress("QCluster", QCluster, &b_QCluster);
    fChain->SetBranchAddress("XCluster", XCluster, &b_XCluster);
@@ -241,6 +285,18 @@ void Read101::Init(TTree *tree)
    fChain->SetBranchAddress("VetoFingE", VetoFingE, &b_NTVetoFingE);
    fChain->SetBranchAddress("VetoX", VetoX, &b_NTVetoX);
    fChain->SetBranchAddress("VetoY", VetoY, &b_NTVetoY);
+   fChain->SetBranchAddress("PosVetoTrEne", PosVetoTrEne, &b_NTPosVetoTrkEne);
+   fChain->SetBranchAddress("PosVetoNFing", PosVetoNFing, &b_NTPosVetoTrkFinger);
+   fChain->SetBranchAddress("PosVetoTrTime", PosVetoTrTime, &b_NTPosVetoTrkTime);
+   fChain->SetBranchAddress("PosVetoFingE", PosVetoFingE, &b_NTPosVetoFingE);
+   fChain->SetBranchAddress("PosVetoX", PosVetoX, &b_NTPosVetoX);
+   fChain->SetBranchAddress("PosVetoY", PosVetoY, &b_NTPosVetoY);
+   fChain->SetBranchAddress("EleVetoTrEne", EleVetoTrEne, &b_NTEleVetoTrkEne);
+   fChain->SetBranchAddress("EleVetoNFing", EleVetoNFing, &b_NTEleVetoTrkFinger);
+   fChain->SetBranchAddress("EleVetoTrTime", EleVetoTrTime, &b_NTEleVetoTrkTime);
+   fChain->SetBranchAddress("EleVetoFingE", EleVetoFingE, &b_NTEleVetoFingE);
+   fChain->SetBranchAddress("EleVetoX", EleVetoX, &b_NTEleVetoX);
+   fChain->SetBranchAddress("EleVetoY", EleVetoY, &b_NTEleVetoY);
    Notify();
    return;
 }
